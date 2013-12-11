@@ -6,6 +6,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class FrmMain {
 
@@ -53,6 +55,14 @@ public class FrmMain {
 		menuBar.add(mitNuevo);
 		
 		JMenuItem mitNuevoUsuario = new JMenuItem("Usuario");
+		mitNuevoUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				IfrPersona ifrPersona = new IfrPersona();
+				//ifrPersona.setBounds(10, 27, 244, 192);
+				frmMain.getContentPane().add(ifrPersona);
+				ifrPersona.setVisible(true);
+			}
+		});
 		mitNuevo.add(mitNuevoUsuario);
 		frmMain.getContentPane().setLayout(null);
 	}
