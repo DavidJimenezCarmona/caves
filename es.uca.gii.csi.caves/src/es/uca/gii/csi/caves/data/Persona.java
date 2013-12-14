@@ -1,25 +1,32 @@
 package es.uca.gii.csi.caves.data;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import es.uca.gii.csi.caves.data.Data;
 
-public class Persona {
+public class Persona 
+{
 	private int _iId;
 	private String _sDni;
 	private String _sNombre;
 	private String _sApellidos;
-	private Date _tFechaNacimiento;
+	private String _sFechaNacimiento;
 	private String _sDireccion;
 	private String _sPoblacion;
 	private String _sProvincia;
 	private int _iSuperpoder;
 
-	public Persona(int id) throws Exception {
+	
+	/**
+	 * @param id
+	 * @throws Exception
+	 */
+	public Persona(int id) throws Exception 
+	{
 		
 		Data.LoadDriver();
 		Connection connection = null;
@@ -31,14 +38,16 @@ public class Persona {
 			resultSet = connection.createStatement().executeQuery(
 					"SELECT * FROM Persona WHERE id=" + id + ";");
 			
+			resultSet.next();
+			
 			_sDni = resultSet.getString("dni");
 			_sNombre = resultSet.getString("nombre");
 			_sApellidos = resultSet.getString("apellidos");
-			_tFechaNacimiento = resultSet.getDate("fechaNacimiento");
+			_sFechaNacimiento = resultSet.getString("fechaNacimiento");
 			_sDireccion = resultSet.getString("direccion");
 			_sPoblacion = resultSet.getString("poblacion");
 			_sProvincia = resultSet.getString("provincia");
-			_iSuperpoder = resultSet.getInt("superpoder");
+			_iSuperpoder = resultSet.getInt("id_Superpoder");
 
 		} catch (SQLException ee) {
 			throw ee;
@@ -67,8 +76,8 @@ public class Persona {
 		return _sApellidos;
 	}
 
-	public Date getFechaNacimiento() {
-		return _tFechaNacimiento;
+	public String getFechaNacimiento() {
+		return _sFechaNacimiento;
 	}
 
 	public String getDireccion() {
@@ -83,8 +92,31 @@ public class Persona {
 		return _sProvincia;
 	}
 
-	public int getSuperpoder() {
-		return _iSuperpoder;
+	/** Método observador
+	 * @return devuelve el nombre del superpoder asociado a la referencia que almacena la variable privada _iSuperpoder.
+	 * @throws Exception 
+	 */
+	public String getSuperpoder() throws Exception {
+		// obtener el nombre del superpoder a partir de la referencia almacenada en _iSuperpoder
+		Data.LoadDriver();
+		Connection connection = null;
+		ResultSet resultSet = null;
+		
+		try 
+		{
+			
+			connection = Data.Connection();
+			resultSet = connection.createStatement().executeQuery(
+					String.format("SELECT nombre FROM Superpoder "
+									+ "WHERE id=%i", _iSuperpoder));
+			resultSet.next();
+			return resultSet.getString("nombre");
+		}
+		catch (SQLException ee) { throw ee; }
+		finally {
+			if (resultSet != null) resultSet.close();
+			if (connection != null) connection.close();
+		}
 	}
 
 	// Métodos modificadores
@@ -100,8 +132,8 @@ public class Persona {
 		_sApellidos = sValor;
 	}
 
-	public void setFechaNacimiento(Date sValor) {
-		_tFechaNacimiento = sValor;
+	public void setFechaNacimiento(String sValor) {
+		_sFechaNacimiento = sValor;
 	}
 
 	public void setDireccion(String sValor) {
@@ -142,7 +174,7 @@ public class Persona {
 									+ "provincia='%s', "
 									+ "superpoder=%i  "
 									+ "WHERE id=%i", 
-									_sDni, _sNombre, _sApellidos, _tFechaNacimiento, _sDireccion, _sPoblacion, _sProvincia, _iSuperpoder));
+									_sDni, _sNombre, _sApellidos, _sFechaNacimiento, _sDireccion, _sPoblacion, _sProvincia, _iSuperpoder));
 		}
 		catch (SQLException ee) { throw ee; }
 		finally {
@@ -182,7 +214,7 @@ public class Persona {
 		{
 			connection = Data.Connection();
 			connection.createStatement().executeUpdate(
-					String.format("INSERT INTO Persona VALUES(null, "
+					String.format("INSERT INTO Persona(dni, nombre, apellidos, fechaNacimiento, direccion, poblacion, provincia, id_Superpoder) VALUES("
 									+ "'%s', "
 									+ "'%s', "
 									+ "'%s', "

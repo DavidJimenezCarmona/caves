@@ -29,39 +29,41 @@ public class IfrPersona extends JInternalFrame {
 	private JTextField txtDni;
 	private JTextField txtNombre;
 	private JTextField txtApellidos;
+	private JTextField txtFechaNacimiento;
+	private JTextField txtDireccion;
 	private JTextField txtPoblacion;
 	private JTextField txtProvincia;
 	private JComboBox<String> comboSuperpoder;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					IfrPersona frame = new IfrPersona();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
+	
 
 	/**
 	 * Create the frame.
 	 */
+	
+	public IfrPersona(Persona persona)
+	{
+		this();
+		_persona = persona;
+		txtDni.setText(_persona.getDni());
+		txtNombre.setText(_persona.getNombre());
+		txtApellidos.setText(_persona.getApellidos());
+		txtFechaNacimiento.setText(_persona.getFechaNacimiento());
+		txtDireccion.setText(_persona.getDireccion());
+		txtPoblacion.setText(_persona.getPoblacion());
+		txtProvincia.setText(_persona.getProvincia());
+	}
+	
 	public IfrPersona() {
 		setTitle("Usuario");
-		setBounds(100, 100, 600, 300);
+		setBounds(0, 0, 700, 450);
 		getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
+				ColumnSpec.decode("default:grow"),
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -90,79 +92,95 @@ public class IfrPersona extends JInternalFrame {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		
 		JLabel lblNuevoUsuario = new JLabel("Nuevo persona");
 		lblNuevoUsuario.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		getContentPane().add(lblNuevoUsuario, "9, 4, 10, 1");
+		getContentPane().add(lblNuevoUsuario, "7, 4, 11, 1");
 		
 		JLabel lblDni = new JLabel("D.N.I. ");
 		getContentPane().add(lblDni, "4, 6, right, default");
 		
 		txtDni = new JTextField();
-		getContentPane().add(txtDni, "6, 6, 5, 1, fill, default");
+		getContentPane().add(txtDni, "6, 6, fill, default");
 		txtDni.setColumns(10);
 		
-		JLabel lblPoblacin = new JLabel("Poblaci\u00F3n");
-		getContentPane().add(lblPoblacin, "18, 6, right, default");
+		JLabel lblDireccin = new JLabel("Direcci\u00F3n");
+		getContentPane().add(lblDireccin, "18, 6, right, default");
 		
-		txtPoblacion = new JTextField();
-		getContentPane().add(txtPoblacion, "20, 6, fill, default");
-		txtPoblacion.setColumns(10);
+		txtDireccion = new JTextField();
+		getContentPane().add(txtDireccion, "20, 6, fill, default");
+		txtDireccion.setColumns(10);
 		
 		JLabel lblNombre = new JLabel("Nombre");
 		getContentPane().add(lblNombre, "4, 8, right, default");
 		
 		txtNombre = new JTextField();
-		getContentPane().add(txtNombre, "6, 8, 5, 1, fill, top");
+		getContentPane().add(txtNombre, "6, 8, fill, top");
 		txtNombre.setColumns(10);
 		
-		JLabel lblProvincia = new JLabel("Provincia");
-		getContentPane().add(lblProvincia, "18, 8, right, default");
+		JLabel lblPoblacin = new JLabel("Poblaci\u00F3n");
+		getContentPane().add(lblPoblacin, "18, 8, right, default");
 		
-		txtProvincia = new JTextField();
-		getContentPane().add(txtProvincia, "20, 8, fill, default");
-		txtProvincia.setColumns(10);
+		txtPoblacion = new JTextField();
+		getContentPane().add(txtPoblacion, "20, 8, fill, default");
+		txtPoblacion.setColumns(10);
 		
 		JLabel lblApellidos = new JLabel("Apellidos");
 		getContentPane().add(lblApellidos, "4, 10, right, default");
 		
 		txtApellidos = new JTextField();
-		getContentPane().add(txtApellidos, "6, 10, 5, 1, fill, default");
+		getContentPane().add(txtApellidos, "6, 10, fill, default");
 		txtApellidos.setColumns(10);
 		
-		JLabel lblNewLabel = new JLabel("Superpoder");
-		getContentPane().add(lblNewLabel, "18, 10, right, default");
+		JLabel lblProvincia = new JLabel("Provincia");
+		getContentPane().add(lblProvincia, "18, 10, right, default");
 		
-		comboSuperpoder = new JComboBox<String>();
-		getContentPane().add(comboSuperpoder, "20, 10, fill, default");
+		txtProvincia = new JTextField();
+		getContentPane().add(txtProvincia, "20, 10, fill, default");
+		txtProvincia.setColumns(10);
 		
 		JLabel lblFechaDeNacimiento = new JLabel("Fecha de nacimiento");
 		getContentPane().add(lblFechaDeNacimiento, "4, 12, right, default");
-		
-		JSpinner spinDia = new JSpinner();
-		getContentPane().add(spinDia, "6, 12");
-		
-		JSpinner spinMes = new JSpinner();
-		getContentPane().add(spinMes, "8, 12");
-		
-		JSpinner spinAnno = new JSpinner();
-		getContentPane().add(spinAnno, "10, 12");
 		
 		JButton btnGuardar = new JButton("Guardar");
 		btnGuardar.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				try {
-					_persona = Persona.New(txtDni.getText(), txtDni.getText(), txtDni.getText(), txtDni.getText(), txtDni.getText(), txtDni.getText(), txtDni.getText(), comboSuperpoder.getSelectedIndex());
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				// Nueva persona
+				if(_persona == null)
+				{
+					try {
+						_persona = Persona.New(txtDni.getText(), txtNombre.getText(), txtApellidos.getText(), txtFechaNacimiento.getText(), txtDireccion.getText(), txtPoblacion.getText(), txtProvincia.getText(), 0);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				// Actualizar datos persona
+				}else{
+					try {
+						_persona.Update();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		});
-		getContentPane().add(btnGuardar, "20, 12");
+		
+		txtFechaNacimiento = new JTextField();
+		getContentPane().add(txtFechaNacimiento, "6, 12, fill, default");
+		txtFechaNacimiento.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("Superpoder");
+		getContentPane().add(lblNewLabel, "18, 12, right, default");
+		
+		comboSuperpoder = new JComboBox<String>();
+		getContentPane().add(comboSuperpoder, "20, 12, fill, default");
+		getContentPane().add(btnGuardar, "20, 14");
 
 	}
 

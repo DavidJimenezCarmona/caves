@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import es.uca.gii.csi.caves.util.Config;
@@ -60,11 +61,17 @@ public class Data
 		ResultSet resultSet = null;
 		
 		try 
-		{			
+		{
+			
 			connection = Data.Connection();
-			resultSet = connection.createStatement().executeQuery(String.format("%s", Config.Properties(Data.getPropertiesUrl()).getProperty("jdbc.lastIdSentence")));
-		}catch(Exception e){ throw e; }
-		
-		return resultSet.getInt("id");	
+			resultSet = connection.createStatement().executeQuery(Config.Properties(Data.getPropertiesUrl()).getProperty("jdbc.lastIdSentence"));
+			resultSet.next();
+			return resultSet.getInt(1);
+		}
+		catch (SQLException ee) { throw ee; }
+		finally {
+			if (resultSet != null) resultSet.close();
+			if (connection != null) connection.close();
+		}
 	}
 }

@@ -39,7 +39,7 @@ public class FrmMain {
 	{	
 		frmMain = new JFrame();
 		frmMain.setTitle("CAVES :: Inicio");
-		frmMain.setBounds(100, 100, 450, 300);
+		frmMain.setBounds(100, 100, 800, 600);
 		frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -49,6 +49,15 @@ public class FrmMain {
 		menuBar.add(mitBuscar);
 		
 		JMenuItem mitBuscarUsuario = new JMenuItem("Usuario");
+		mitBuscarUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				IfrPersonas ifrPersonas = new IfrPersonas(getFrame());
+				ifrPersonas.setBounds(0, 0, 700, 450);
+				frmMain.getContentPane().add(ifrPersonas, 0); // El segundo parámetro es para que siempre aparezca delante
+				ifrPersonas.setVisible(true);
+			}
+		});
 		mitBuscar.add(mitBuscarUsuario);
 		
 		JMenu mitNuevo = new JMenu("Nuevo");
@@ -58,7 +67,7 @@ public class FrmMain {
 		mitNuevoUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				IfrPersona ifrPersona = new IfrPersona();
-				//ifrPersona.setBounds(10, 27, 244, 192);
+				ifrPersona.setBounds(0, 0, 700, 450);
 				frmMain.getContentPane().add(ifrPersona);
 				ifrPersona.setVisible(true);
 			}
