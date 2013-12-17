@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import es.uca.gii.csi.caves.data.Data;
 
 public class Persona 
@@ -18,7 +20,7 @@ public class Persona
 	private String _sDireccion;
 	private String _sPoblacion;
 	private String _sProvincia;
-	private int _iSuperpoder;
+	private Superpoder _superpoder;
 
 	
 	/**
@@ -39,7 +41,7 @@ public class Persona
 					"SELECT * FROM Persona WHERE id=" + id + ";");
 			
 			resultSet.next();
-			
+			_iId = resultSet.getInt("id");
 			_sDni = resultSet.getString("dni");
 			_sNombre = resultSet.getString("nombre");
 			_sApellidos = resultSet.getString("apellidos");
@@ -47,7 +49,7 @@ public class Persona
 			_sDireccion = resultSet.getString("direccion");
 			_sPoblacion = resultSet.getString("poblacion");
 			_sProvincia = resultSet.getString("provincia");
-			_iSuperpoder = resultSet.getInt("id_Superpoder");
+			_superpoder = new Superpoder(resultSet.getInt("id_Superpoder"));
 
 		} catch (SQLException ee) {
 			throw ee;
@@ -96,27 +98,9 @@ public class Persona
 	 * @return devuelve el nombre del superpoder asociado a la referencia que almacena la variable privada _iSuperpoder.
 	 * @throws Exception 
 	 */
-	public String getSuperpoder() throws Exception {
-		// obtener el nombre del superpoder a partir de la referencia almacenada en _iSuperpoder
-		Data.LoadDriver();
-		Connection connection = null;
-		ResultSet resultSet = null;
-		
-		try 
-		{
-			
-			connection = Data.Connection();
-			resultSet = connection.createStatement().executeQuery(
-					String.format("SELECT nombre FROM Superpoder "
-									+ "WHERE id=%i", _iSuperpoder));
-			resultSet.next();
-			return resultSet.getString("nombre");
-		}
-		catch (SQLException ee) { throw ee; }
-		finally {
-			if (resultSet != null) resultSet.close();
-			if (connection != null) connection.close();
-		}
+	public Superpoder getSuperpoder() throws Exception
+	{
+		return _superpoder;
 	}
 
 	// Métodos modificadores
@@ -148,8 +132,8 @@ public class Persona
 		_sProvincia = sValor;
 	}
 
-	public void setSuperpoder(int sValor) {
-		_iSuperpoder = sValor;
+	public void setSuperpoder(Superpoder valor) {
+		_superpoder = valor;
 	}
 
 	// Método Update
@@ -157,28 +141,30 @@ public class Persona
 	{
 		Data.LoadDriver();
 		Connection connection = null;
-		ResultSet resultSet = null;
 		
 		try 
 		{
 			
 			connection = Data.Connection();
-			resultSet = connection.createStatement().executeQuery(
-					String.format("UPDATE Persona SET "
-									+ "dni='%s', "
-									+ "nombre='%s', "
-									+ "apellidos='%s', "
-									+ "fechaNacimiento='%s', "
-									+ "direccion='%s', "
-									+ "poblacion='%s', "
-									+ "provincia='%s', "
-									+ "superpoder=%i  "
-									+ "WHERE id=%i", 
-									_sDni, _sNombre, _sApellidos, _sFechaNacimiento, _sDireccion, _sPoblacion, _sProvincia, _iSuperpoder));
+			
+			String query=String.format("UPDATE Persona SET "
+					+ "dni='%s', "
+					+ "nombre='%s', "
+					+ "apellidos='%s', "
+					+ "fechaNacimiento='%s', "
+					+ "direccion='%s', "
+					+ "poblacion='%s', "
+					+ "provincia='%s', "
+					+ "id_Superpoder=%d  "
+					+ "WHERE id=%d", 
+					_sDni, _sNombre, _sApellidos, _sFechaNacimiento, _sDireccion, _sPoblacion, _sProvincia, _superpoder.getId(), _iId);		
+									
+			 connection.createStatement().executeUpdate(Data.String2Sql(query,true));
+			 JOptionPane.showMessageDialog(null,"Registro modificado con éxito");
+			 
 		}
 		catch (SQLException ee) { throw ee; }
 		finally {
-			if (resultSet != null) resultSet.close();
 			if (connection != null) connection.close();
 		}
 	}
@@ -204,26 +190,69 @@ public class Persona
 	// Método NuevaPersona
 	public static Persona New(String sDni, String sNombre, String sApellidos,
 			String sFechaNacimiento, String sDireccion, String sPoblacion,
-			String sProvincia, int iSuperpoder) throws Exception
+			String sProvincia, Superpoder superpoder) throws Exception
 	{
 		Data.LoadDriver();
 		Connection connection = null;
 		ResultSet resultSet = null;
 		
+		
+
+		
 		try 
 		{
 			connection = Data.Connection();
-			connection.createStatement().executeUpdate(
-					String.format("INSERT INTO Persona(dni, nombre, apellidos, fechaNacimiento, direccion, poblacion, provincia, id_Superpoder) VALUES("
-									+ "'%s', "
-									+ "'%s', "
-									+ "'%s', "
-									+ "'%s', "
-									+ "'%s', "
-									+ "'%s', "
-									+ "'%s', "
-									+ "%d)",
-									sDni, sNombre, sApellidos, sFechaNacimiento, sDireccion, sPoblacion, sProvincia, iSuperpoder));
+			if(superpoder.getId() > 0)
+			{
+				JOptionPane.showMessageDialog(null, Data.String2Sql(String.format("INSERT INTO Persona(dni, nombre, apellidos, fechaNacimiento, direccion, poblacion, provincia, id_Superpoder) VALUES("
+						+ "'%s', "
+						+ "'%s', "
+						+ "'%s', "
+						+ "'%s', "
+						+ "'%s', "
+						+ "'%s', "
+						+ "'%s', "
+						+ "%d)",
+						sDni, sNombre, sApellidos, sFechaNacimiento, sDireccion, sPoblacion, sProvincia, superpoder.getId()), true));
+				connection.createStatement().executeUpdate(
+						Data.String2Sql(String.format("INSERT INTO Persona(dni, nombre, apellidos, fechaNacimiento, direccion, poblacion, provincia, id_Superpoder) VALUES("
+										+ "'%s', "
+										+ "'%s', "
+										+ "'%s', "
+										+ "'%s', "
+										+ "'%s', "
+										+ "'%s', "
+										+ "'%s', "
+										+ "%d)",
+										sDni, sNombre, sApellidos, sFechaNacimiento, sDireccion, sPoblacion, sProvincia, superpoder.getId()), true));
+				JOptionPane.showMessageDialog(null, "Nueva persona registrada con éxito");
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null, Data.String2Sql(String.format("INSERT INTO Persona(dni, nombre, apellidos, fechaNacimiento, direccion, poblacion, provincia, id_Superpoder) VALUES("
+						+ "'%s', "
+						+ "'%s', "
+						+ "'%s', "
+						+ "'%s', "
+						+ "'%s', "
+						+ "'%s', "
+						+ "'%s', "
+						+ "null)",
+						sDni, sNombre, sApellidos, sFechaNacimiento, sDireccion, sPoblacion, sProvincia),true));
+				connection.createStatement().executeUpdate(
+						Data.String2Sql(String.format("INSERT INTO Persona(dni, nombre, apellidos, fechaNacimiento, direccion, poblacion, provincia, id_Superpoder) VALUES("
+										+ "'%s', "
+										+ "'%s', "
+										+ "'%s', "
+										+ "'%s', "
+										+ "'%s', "
+										+ "'%s', "
+										+ "'%s', "
+										+ "null)",
+										sDni, sNombre, sApellidos, sFechaNacimiento, sDireccion, sPoblacion, sProvincia),true));
+				JOptionPane.showMessageDialog(null, "Nueva persona registrada con éxito");
+			}
+			
 			return new Persona(Data.LastId(connection));
 		}
 		catch (SQLException ee) { throw ee; }
@@ -253,12 +282,12 @@ public class Persona
 			// Selección personalizada
 			else{
 				resultSet = connection.createStatement().executeQuery(
-						String.format("SELECT id FROM Persona "
+						Data.String2Sql(String.format("SELECT id FROM Persona "
 								    + "WHERE dni like '%s' "
 								    + "OR nombre like '%s' "
 								    + "OR apellidos like '%s' "
 								    + "OR poblacion like '%s'",
-								    "%"+sCriterio+"%", "%"+sCriterio+"%", "%"+sCriterio+"%", "%"+sCriterio+"%"));
+								    "%"+sCriterio+"%", "%"+sCriterio+"%", "%"+sCriterio+"%", "%"+sCriterio+"%"),true));
 			}
 			while (resultSet.next())
 			{

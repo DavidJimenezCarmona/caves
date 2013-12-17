@@ -6,10 +6,17 @@ import javax.swing.table.AbstractTableModel;
 
 import es.uca.gii.csi.caves.data.Persona;
 
+/**
+ * @author usuario
+ *
+ */
 public class PersonaTableModel extends AbstractTableModel
 {
 	private ArrayList<Persona> _aData;
 	
+	/**
+	 * @param aData
+	 */
 	public PersonaTableModel(ArrayList<Persona> aData)
 	{
 		_aData = aData;
@@ -23,6 +30,10 @@ public class PersonaTableModel extends AbstractTableModel
 		return 8;
 	}
 	
+	/**
+	 * @param i
+	 * @return
+	 */
 	public Persona getData(int i)
 	{
 		return _aData.get(i);
@@ -59,7 +70,7 @@ public class PersonaTableModel extends AbstractTableModel
 				return _aData.get(rowIndex).getProvincia();
 			case 7:
 			try {
-				return _aData.get(rowIndex).getSuperpoder();
+				return _aData.get(rowIndex).getSuperpoder().getNombre();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

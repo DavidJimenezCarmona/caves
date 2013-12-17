@@ -1,4 +1,6 @@
 import java.awt.EventQueue;
+
+import es.uca.gii.csi.caves.data.Data;
 import es.uca.gii.csi.caves.gui.FrmMain;
 
 public class Main {

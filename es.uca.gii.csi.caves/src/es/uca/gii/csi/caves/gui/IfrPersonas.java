@@ -33,8 +33,9 @@ public class IfrPersonas extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public IfrPersonas(Container pnlMain) {
+		setClosable(true);
 		pnlParent=pnlMain;
-		setTitle("Persona -Busqueda");
+		setTitle("Persona :: Busqueda");
 		setBounds(0, 0, 700, 450);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
@@ -76,10 +77,16 @@ public class IfrPersonas extends JInternalFrame {
 					Persona persona =((PersonaTableModel)table.getModel()).getData(iRow);
 					if (persona != null)
 					{
-						IfrPersona ifrPersona = new IfrPersona();
-						ifrPersona.setBounds(10, 27, 244, 192);
-						pnlParent.add(ifrPersona, 0);
-						ifrPersona.setVisible(true);
+						IfrPersona ifrPersona;
+						try {
+							ifrPersona = new IfrPersona(persona);
+							ifrPersona.setBounds(0, 0, 700, 450);
+							pnlParent.add(ifrPersona, 0);
+							ifrPersona.setVisible(true);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}

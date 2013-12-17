@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import es.uca.gii.csi.caves.util.Config;
@@ -37,7 +38,7 @@ public class Data
 	// y (si bAddWildcards es true) añade "'" antes y después
 	public static String String2Sql(String s, boolean bAddWildcards)
 	{
-		s.replace("'", "''");
+		s = s.replace("'", "''");
 		if(bAddWildcards)
 		{
 			s="'"+s+"'";
@@ -57,21 +58,28 @@ public class Data
 	public static int LastId(Connection con) throws Exception
 	{
 		Data.LoadDriver();
-		Connection connection = null;
 		ResultSet resultSet = null;
 		
 		try 
 		{
-			
-			connection = Data.Connection();
-			resultSet = connection.createStatement().executeQuery(Config.Properties(Data.getPropertiesUrl()).getProperty("jdbc.lastIdSentence"));
+			resultSet = con.createStatement().executeQuery(Config.Properties(Data.getPropertiesUrl()).getProperty("jdbc.lastIdSentence"));
 			resultSet.next();
 			return resultSet.getInt(1);
 		}
 		catch (SQLException ee) { throw ee; }
 		finally {
 			if (resultSet != null) resultSet.close();
-			if (connection != null) connection.close();
 		}
+	}
+	
+	// Busca en array si existe un superpoder cuyo nombre sea igual a string
+	// Devuelve indice del array si existe, y -1 si no lo encuentra 
+	public static int getIndex(ArrayList<Superpoder> array, String string)
+	{
+		for(int i=0; i<array.size(); i++)
+		{
+			if(string.equals(array.get(i).getNombre())) return i;
+		}
+		return -1;
 	}
 }

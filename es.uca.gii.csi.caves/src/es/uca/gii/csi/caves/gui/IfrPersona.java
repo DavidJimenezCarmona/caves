@@ -9,12 +9,15 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.factories.FormFactory;
 
+import es.uca.gii.csi.caves.data.Data;
 import es.uca.gii.csi.caves.data.Persona;
+import es.uca.gii.csi.caves.data.Superpoder;
 
 import javax.swing.JLabel;
 
 import java.awt.Font;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JSpinner;
@@ -23,6 +26,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JComboBox;
+
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import java.awt.Component;
+
+import javax.swing.SwingConstants;
+
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.util.ArrayList;
+
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 public class IfrPersona extends JInternalFrame {
 	private Persona _persona=null;
@@ -34,17 +50,20 @@ public class IfrPersona extends JInternalFrame {
 	private JTextField txtPoblacion;
 	private JTextField txtProvincia;
 	private JComboBox<String> comboSuperpoder;
+	private ArrayList<Superpoder> _aSuperpoderes; // copia
 	
 	
 
 	/**
 	 * Create the frame.
+	 * @throws Exception 
 	 */
 	
-	public IfrPersona(Persona persona)
+	public IfrPersona(Persona persona) throws Exception
 	{
 		this();
 		_persona = persona;
+		
 		txtDni.setText(_persona.getDni());
 		txtNombre.setText(_persona.getNombre());
 		txtApellidos.setText(_persona.getApellidos());
@@ -52,9 +71,29 @@ public class IfrPersona extends JInternalFrame {
 		txtDireccion.setText(_persona.getDireccion());
 		txtPoblacion.setText(_persona.getPoblacion());
 		txtProvincia.setText(_persona.getProvincia());
+		
 	}
 	
 	public IfrPersona() {
+		addInternalFrameListener(new InternalFrameAdapter() {
+			@Override
+			public void internalFrameOpened(InternalFrameEvent arg0) {
+				
+				try {
+					_aSuperpoderes = Superpoder.Select();
+					for(Superpoder superpoder : _aSuperpoderes )
+					{
+						comboSuperpoder.addItem(superpoder.getNombre());
+					}
+					if(_persona != null)
+						comboSuperpoder.setSelectedIndex( Data.getIndex(_aSuperpoderes, _persona.getSuperpoder().getNombre()));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		setClosable(true);
 		setTitle("Usuario");
 		setBounds(0, 0, 700, 450);
 		getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
@@ -150,11 +189,13 @@ public class IfrPersona extends JInternalFrame {
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
+				int id_Superpoder = _aSuperpoderes.get(comboSuperpoder.getSelectedIndex()).getId();
 				// Nueva persona
 				if(_persona == null)
 				{
 					try {
-						_persona = Persona.New(txtDni.getText(), txtNombre.getText(), txtApellidos.getText(), txtFechaNacimiento.getText(), txtDireccion.getText(), txtPoblacion.getText(), txtProvincia.getText(), 0);
+						_persona = Persona.New(txtDni.getText(), txtNombre.getText(), txtApellidos.getText(), txtFechaNacimiento.getText(), txtDireccion.getText(), txtPoblacion.getText(), txtProvincia.getText(), new Superpoder(id_Superpoder));
+						setVisible(false);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -162,7 +203,18 @@ public class IfrPersona extends JInternalFrame {
 				// Actualizar datos persona
 				}else{
 					try {
+						_persona.setDni(txtDni.getText());
+						_persona.setNombre(txtNombre.getText());
+						_persona.setApellidos(txtApellidos.getText());
+						_persona.setFechaNacimiento(txtFechaNacimiento.getText());
+						_persona.setDireccion(txtDireccion.getText());
+						_persona.setPoblacion(txtPoblacion.getText());
+						_persona.setProvincia(txtProvincia.getText());
+						_persona.setSuperpoder(new Superpoder(id_Superpoder));
 						_persona.Update();
+						setVisible(false);
+						
+						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -172,15 +224,30 @@ public class IfrPersona extends JInternalFrame {
 		});
 		
 		txtFechaNacimiento = new JTextField();
+		txtFechaNacimiento.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				if(txtFechaNacimiento.getText().equals("aaaa-mm-dd"))
+					txtFechaNacimiento.setText("");
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(txtFechaNacimiento.getText().equals(""))
+					txtFechaNacimiento.setText("aaaa-mm-dd");
+			}
+		});
+		txtFechaNacimiento.setText("aaaa-mm-dd");
 		getContentPane().add(txtFechaNacimiento, "6, 12, fill, default");
 		txtFechaNacimiento.setColumns(10);
 		
-		JLabel lblNewLabel = new JLabel("Superpoder");
-		getContentPane().add(lblNewLabel, "18, 12, right, default");
+		JLabel lblSuperpoder = new JLabel("Superpoder");
+		getContentPane().add(lblSuperpoder, "18, 12, right, default");
 		
 		comboSuperpoder = new JComboBox<String>();
 		getContentPane().add(comboSuperpoder, "20, 12, fill, default");
 		getContentPane().add(btnGuardar, "20, 14");
+		getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{txtDni, txtNombre, txtApellidos, txtFechaNacimiento, txtDireccion, txtPoblacion, txtProvincia, comboSuperpoder, btnGuardar}));
+		setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{txtDni, txtNombre, txtApellidos, txtFechaNacimiento, txtDireccion, txtPoblacion, txtProvincia, comboSuperpoder, btnGuardar}));
 
 	}
 
