@@ -6,10 +6,6 @@ import javax.swing.table.AbstractTableModel;
 
 import es.uca.gii.csi.caves.data.Persona;
 
-/**
- * @author usuario
- *
- */
 public class PersonaTableModel extends AbstractTableModel
 {
 	private ArrayList<Persona> _aData;
@@ -30,6 +26,7 @@ public class PersonaTableModel extends AbstractTableModel
 		return 8;
 	}
 	
+	
 	/**
 	 * @param i
 	 * @return
@@ -38,9 +35,10 @@ public class PersonaTableModel extends AbstractTableModel
 	{
 		return _aData.get(i);
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.table.TableModel#getRowCount()
+
+	/**
+	 * Método observador
+	 * @return devuelve número de filas a mostrar en la tabla
 	 */
 	public int getRowCount()
 	{
@@ -48,6 +46,12 @@ public class PersonaTableModel extends AbstractTableModel
 	}
 	
 	
+	/**
+	 * Método observador
+	 * @param rowIndex fila de la tabla
+	 * @param columIndex columna de la tabla
+	 * @return devuelve el objeto en la posición rowIndex, columIndex
+	 */
 	public Object getValueAt(int rowIndex, int columIndex)
 	{
 		switch(columIndex)

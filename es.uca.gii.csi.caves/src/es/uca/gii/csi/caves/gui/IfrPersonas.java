@@ -1,7 +1,9 @@
 package es.uca.gii.csi.caves.gui;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.JInternalFrame;
 
@@ -80,8 +82,10 @@ public class IfrPersonas extends JInternalFrame {
 						IfrPersona ifrPersona;
 						try {
 							ifrPersona = new IfrPersona(persona);
-							ifrPersona.setBounds(0, 0, 700, 450);
-							pnlParent.add(ifrPersona, 0);
+							Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+							ifrPersona.setBounds(0, 0, screenSize.width-5, screenSize.height);
+							ifrPersona.setTitle("Persona :: Modificar");						
+							pnlParent.add(ifrPersona, 0);							
 							ifrPersona.setVisible(true);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block

@@ -11,9 +11,13 @@ public class Superpoder {
 	private String _sNombre;
 	private String _sDescripcion;
 	
+	/**
+	 * Constructor de Superpoder: Crea una nueva instancia a partir del iId
+	 * @param iId Identificador (clave primaria) de Superpoder
+	 * @throws Exception
+	 */
 	public Superpoder(int iId) throws Exception 
 	{
-		Data.LoadDriver();
 		Connection connection = null;
 		ResultSet resultSet = null;
 		
@@ -46,41 +50,55 @@ public class Superpoder {
 		}
 	}
 	
+	/**
+	 * @return devuelve el identificador de la instancia Superpoder
+	 */
 	public int getId()
 	{
 		return _iId;
 	}
 	
+	/**
+	 * @return devuelve el nombre de la instancia Superpoder
+	 */
 	public String getNombre()
 	{
 		return _sNombre;
 	}
 	
+	/**
+	 * @return devuelve la descripción de la instancia Superpoder
+	 */
 	public String getDescripcion()
 	{
 		return _sDescripcion;
 	}
 	
-	public void setId(int iId)
-	{
-		_iId = iId;
-	}
-	
+	/**
+	 * @param sNombre modifica el nombre de la instancia Superpoder
+	 */
 	public void setNombre(String sNombre)
 	{
 		_sNombre = sNombre;
 	}
 	
+	/**
+	 * @param sDescripcion modifica la descripcion de la instancia Superpoder
+	 */
 	public void setDescripcion(String sDescripcion)
 	{
 		_sDescripcion = sDescripcion;
 	}
 
+	/**
+	 * Seleccionar el conjunto de registros completo de la BD
+	 * @return devuelve el conjunto de instancias de Superpoder
+	 * @throws Exception
+	 */
 	public static ArrayList<Superpoder> Select() throws Exception
 	{
 		ArrayList<Superpoder> aListaSuperpoderes = new ArrayList<Superpoder>();
 		
-		Data.LoadDriver();
 		Connection connection = null;
 		ResultSet resultSet = null;
 		
@@ -103,7 +121,4 @@ public class Superpoder {
 			if (connection != null) connection.close();
 		}
 	}
-	
-	
-
 }

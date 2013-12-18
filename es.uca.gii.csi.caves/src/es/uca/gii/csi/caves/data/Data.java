@@ -14,6 +14,11 @@ public class Data
 {
 	public static String getPropertiesUrl() { return "./db.properties"; }
 	
+	/**
+	 * Establece una conexión con la BD
+	 * @return una referencia de tipo conexión
+	 * @throws Exception
+	 */
 	public static Connection Connection() throws Exception 
 	{
 		try {
@@ -26,6 +31,13 @@ public class Data
 		catch (Exception ee) { throw ee; }
 	}
 	
+	/**
+	 * Carga el driver especificado en el fichero de configuración
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	public static void LoadDriver()
 			throws InstantiationException, IllegalAccessException,
 			ClassNotFoundException, IOException 
@@ -34,8 +46,13 @@ public class Data
 			).getProperty("jdbc.driverClassName")).newInstance();
 	}
 	
-	// Reemplaza la cadena "'" por "''"
-	// y (si bAddWildcards es true) añade "'" antes y después
+	
+	/**
+	 * Reemplaza la cadena "'" por "''"
+	 * @param s cadena de caracteres a tratar
+	 * @param bAddWildcards si bAddWildcards es true añade "'" antes y después y si es false nada
+	 * @return cadena de caracteres resultante
+	 */
 	public static String String2Sql(String s, boolean bAddWildcards)
 	{
 		s = s.replace("'", "''");
@@ -46,7 +63,10 @@ public class Data
 		return s;
 	}
 	
-	// Convierte true ó false en 1 ó 0, respectivamente
+	/** Convierte true ó false en 1 ó 0, respectivamente
+	 * @param b booleano 
+	 * @return devuelve 1 para true y 0 para false
+	 */
 	public static int Boolean2Sql(boolean b)
 	{
 		if(b)
@@ -55,9 +75,13 @@ public class Data
 			return 0;
 	}
 	
+	/**
+	 * @param con referencia a conexión
+	 * @return devuelve la id del último registro insertado en la BD
+	 * @throws Exception
+	 */
 	public static int LastId(Connection con) throws Exception
 	{
-		Data.LoadDriver();
 		ResultSet resultSet = null;
 		
 		try 
@@ -72,8 +96,12 @@ public class Data
 		}
 	}
 	
-	// Busca en array si existe un superpoder cuyo nombre sea igual a string
-	// Devuelve indice del array si existe, y -1 si no lo encuentra 
+	/** Busca en array si existe un superpoder cuyo nombre sea igual a string
+	 *	Devuelve indice del array si existe, y -1 si no lo encuentra 
+	 * @param array ArrayList del tipo Superpoder
+	 * @param string cadena de caracteres a buscar en al array
+	 * @return devuelve el índice de la primera ocurrencia de la cadena de caracteres string en array 
+	 */
 	public static int getIndex(ArrayList<Superpoder> array, String string)
 	{
 		for(int i=0; i<array.size(); i++)
